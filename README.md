@@ -23,21 +23,21 @@ This React Native app uses Expo and the device's barometer sensor to calculate t
 
 2. Navigate to the project directory:
 
-  ```bash
-  cd mobile-app
-  ```
+    ```bash
+    cd mobile-app
+    ```
 
 3. Install dependencies:
 
-  ```bash
-  npm install
-  ```
+    ```bash
+    npm install
+    ```
 
 3. Run the app:
 
-  ```bash
-  expo start
-  ```
+    ```bash
+    expo start
+    ```
 
 ## Installation
 - Open the app on your device or emulator.
