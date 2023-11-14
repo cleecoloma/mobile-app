@@ -1,154 +1,108 @@
-import React, { useEffect, useState } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Switch,
-  TextInput,
-  TouchableOpacity,
-  Keyboard,
-} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, TextInput, Button, Switch } from 'react-native';
 import { Barometer } from 'expo-sensors';
 
-const App = () => {
+export default function App() {
+  const [barometerData, setBarometerData] = useState(null);
+  const [altitude, setAltitude] = useState('');
   const [useBarometer, setUseBarometer] = useState(true);
-  const [pressure, setPressure] = useState(null);
-  const [manualPressure, setManualPressure] = useState('');
   const [boilingPoint, setBoilingPoint] = useState(null);
 
   useEffect(() => {
-    if (useBarometer) {
-      const subscribe = async () => {
-        await Barometer.setUpdateInterval(1000);
-        Barometer.addListener(({ pressure }) => {
-          setPressure(pressure);
-          calculateBoilingPoint(pressure);
-        });
-      };
+    const subscription = Barometer.addListener((data) => {
+      setBarometerData(data);
+    });
 
-      subscribe();
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
-      return () => {
-        Barometer.removeAllListeners();
-      };
-    }
-  }, [useBarometer]);
-
-  const calculateBoilingPoint = (currentPressure) => {
-    // Use Antoine equation if barometer is selected as the pressure source
-    if (useBarometer) {
-      // Antoine equation constants for water
-      const A = 8.07131;
-      const B = 1730.63;
-      const C = 233.426;
-
-      // Convert pressure to kilopascals
-      const pressureKPa = currentPressure / 10;
-
-      // Calculate boiling point in Celsius
-      const boilingPointCelsius =
-        (B - A) / (Math.log10(pressureKPa) - C) - 273.15;
-
-      // Convert Celsius to Fahrenheit
-      const boilingPointFahrenheit = (boilingPointCelsius * 9) / 5 + 32;
-
-      setBoilingPoint(boilingPointFahrenheit.toFixed(2));
+  const calculateBoilingPoint = () => {
+    if (useBarometer && barometerData) {
+      const { pressure } = barometerData;
+      // Convert pressure to altitude using a simplified formula
+      const elevationInFeet =
+        (1 - Math.pow(pressure / 1013.25, 0.190284)) * 145366.45;
+      const boilingPoint = 212 - 0.00198 * elevationInFeet;
+      setBoilingPoint(boilingPoint.toFixed(2));
+    } else if (!useBarometer && altitude !== '') {
+      const elevationInFeet = parseFloat(altitude);
+      const boilingPoint = 212 - 0.00198 * elevationInFeet;
+      setBoilingPoint(boilingPoint.toFixed(2));
     } else {
-      // Use manual input if manual input is selected as the pressure source
-      const manualPressureFloat = parseFloat(manualPressure);
-      if (!isNaN(manualPressureFloat)) {
-        setBoilingPoint(antoineEquation(manualPressureFloat).toFixed(2));
-      } else {
-        setBoilingPoint(null);
-      }
+      setBoilingPoint(null);
     }
-  };
-
-  const antoineEquation = (pressure) => {
-    // Antoine equation constants for water
-    const A = 8.07131;
-    const B = 1730.63;
-    const C = 233.426;
-
-    // Convert pressure to kilopascals
-    const pressureKPa = pressure / 10;
-
-    // Calculate boiling point in Celsius
-    return (B - A) / (Math.log10(pressureKPa) - C) - 273.15;
-  };
-
-  const handleToggleSwitch = () => {
-    setUseBarometer(!useBarometer);
-  };
-
-  const handleManualPressureInput = (input) => {
-    setManualPressure(input);
-  };
-
-  const handleCalculatePress = () => {
-    calculateBoilingPoint(useBarometer ? pressure : parseFloat(manualPressure));
-    // Dismiss keyboard
-    Keyboard.dismiss();
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Use Barometer:</Text>
-      <Switch value={useBarometer} onValueChange={handleToggleSwitch} />
-      {useBarometer && (
-        <Text style={styles.text}>Barometric Pressure: {pressure} hPa</Text>
+      <Text style={styles.title}>Boiling Point Estimator</Text>
+
+      <View style={styles.switchContainer}>
+        <Text>Use Barometer</Text>
+        <Switch
+          value={useBarometer}
+          onValueChange={() => setUseBarometer(!useBarometer)}
+        />
+      </View>
+
+      {useBarometer && barometerData && (
+        <View style={styles.dataContainer}>
+          <Text>Pressure: {barometerData.pressure} hPa</Text>
+        </View>
       )}
+
       {!useBarometer && (
-        <View>
-          <Text style={styles.text}>Enter Manual Pressure (hPa):</Text>
+        <View style={styles.dataContainer}>
+          <Text>Enter Altitude (feet):</Text>
           <TextInput
             style={styles.input}
             keyboardType='numeric'
-            value={manualPressure}
-            onChangeText={handleManualPressureInput}
+            value={altitude}
+            onChangeText={(text) => setAltitude(text)}
           />
         </View>
       )}
-      <TouchableOpacity style={styles.button} onPress={handleCalculatePress}>
-        <Text style={styles.buttonText}>Calculate Boiling Point</Text>
-      </TouchableOpacity>
-      {boilingPoint && (
-        <Text style={styles.text}>
-          Estimated Boiling Point: {boilingPoint} °F
-        </Text>
+
+      <Button title='Calculate Boiling Point' onPress={calculateBoilingPoint} />
+
+      {boilingPoint !== null && (
+        <View style={styles.resultContainer}>
+          <Text>Boiling Point: {boilingPoint} °F</Text>
+        </View>
       )}
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
   },
-  text: {
-    fontSize: 18,
-    marginVertical: 10,
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  switchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  dataContainer: {
+    marginBottom: 10,
   },
   input: {
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
     marginBottom: 10,
-    padding: 10,
+    paddingHorizontal: 10,
   },
-  button: {
-    backgroundColor: 'blue',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 10,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
+  resultContainer: {
+    marginTop: 20,
   },
 });
-
-export default App;
