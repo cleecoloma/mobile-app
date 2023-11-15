@@ -2,11 +2,28 @@
 
 This React Native app uses Expo and the device's barometer sensor to calculate the boiling point of water. Users can input pressure values manually or use the barometer readings.
 
+## Try It
+
+> Open the link below using Expo Go:
+- Android - [exp://u.expo.dev/update/ba263b10-ccee-4df4-ae69-13f1e59ed785](exp://u.expo.dev/update/ba263b10-ccee-4df4-ae69-13f1e59ed785)
+- Apple - [exp://u.expo.dev/update/e3472314-ec0a-45f7-970e-fdb605737ea8](exp://u.expo.dev/update/e3472314-ec0a-45f7-970e-fdb605737ea8)
+
+## Visual
+Home
+![Home](./assets/home.png)
+---
+![Landmarks](./assets/landmarks.png)
+---
+![Contact](./assets/contact.png)
+
 ## Features
 
 - Retrieve barometer readings from the device.
 - Allow users to manually input pressure values.
 - Calculate and display the boiling point of water in Fahrenheit.
+- Display the boiling point at sea level.
+- Show popular landmarks and their altitudes, including those below sea level.
+- Contact/About Me page with author information and social media links.
 
 ## Prerequisites
 
