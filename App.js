@@ -5,7 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { StyleSheet, Text, View } from 'react-native';
 import AppHome from './Components/Home';
 import LandmarksScreen from './Components/LandmarksScreen';
-import ContactScreen from './ContactScreen';
+import ContactScreen from './Components/ContactScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
