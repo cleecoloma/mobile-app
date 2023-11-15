@@ -11,31 +11,32 @@ const ContactScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Image source={require('./your-image.jpg')} style={styles.image} />
+      <Image source={require('../assets/chester.jpeg')} style={styles.image} />
       <Text style={styles.backgroundText}>
-        {/* Add a background paragraph about yourself here */}
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam quis
-        lorem vel mauris laoreet eleifend.
+        Hi, my name is Chester Lee Coloma. I’m a full-stack software
+        developer and a mechanical engineer. I build digital bridges that connect ideas with the world. Connect with me using my icon links below:
       </Text>
 
       <View style={styles.iconsContainer}>
         <TouchableOpacity
-          onPress={() => openLink('https://github.com/your-username')}
+          onPress={() => openLink('https://github.com/cleecoloma')}
         >
           <Ionicons
             name='logo-github'
-            size={32}
+            size={48}
             color='#333'
             style={styles.icon}
           />
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => openLink('https://www.linkedin.com/in/your-username')}
+          onPress={() =>
+            openLink('https://www.linkedin.com/in/chesterleecoloma/')
+          }
         >
           <Ionicons
             name='logo-linkedin'
-            size={32}
+            size={48}
             color='#0077b5'
             style={styles.icon}
           />

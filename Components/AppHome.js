@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { Barometer } from 'expo-sensors';
 
-export default function App() {
+export default function AppHome() {
   const [barometerData, setBarometerData] = useState(null);
   const [altitude, setAltitude] = useState('');
   const [useBarometer, setUseBarometer] = useState(true);
