@@ -4,8 +4,6 @@ import { Ionicons } from '@expo/vector-icons';
 
 const ContactScreen = () => {
   const openLink = (url) => {
-    // Implement the logic to open the link (e.g., using Linking)
-    // This example uses a console.log for demonstration purposes
     console.log(`Opening link: ${url}`);
   };
 
@@ -13,8 +11,10 @@ const ContactScreen = () => {
     <View style={styles.container}>
       <Image source={require('../assets/chester.jpeg')} style={styles.image} />
       <Text style={styles.backgroundText}>
-        Hi, my name is Chester Lee Coloma. I’m a full-stack software
-        developer and a mechanical engineer. I build digital bridges that connect ideas with the world. Connect with me using my icon links below:
+        Hi, my name is Chester Lee Coloma.{'\n'}I’m a full-stack software
+        developer and a mechanical engineer.{'\n\n'}I build digital bridges that
+        connect ideas with the world.{'\n\n'}Connect with me using my icon links
+        below:
       </Text>
 
       <View style={styles.iconsContainer}>

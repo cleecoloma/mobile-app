@@ -4,7 +4,7 @@ import {
   Text,
   View,
   TextInput,
-  Button,
+  TouchableHighlight,
   Switch,
 } from 'react-native';
 import { Barometer } from 'expo-sensors';
@@ -47,7 +47,7 @@ export default function AppHome() {
       <Text style={styles.title}>Boiling Point Estimator</Text>
 
       <View style={styles.switchContainer}>
-        <Text>Use Barometer</Text>
+        <Text>{`Use Barometer:  `}</Text>
         <Switch
           value={useBarometer}
           onValueChange={() => setUseBarometer(!useBarometer)}
@@ -56,7 +56,7 @@ export default function AppHome() {
 
       {useBarometer && barometerData && (
         <View style={styles.dataContainer}>
-          <Text>Pressure: {barometerData.pressure} hPa</Text>
+          <Text>Pressure: {Math.round(barometerData.pressure)} hPa</Text>
         </View>
       )}
 
@@ -72,7 +72,13 @@ export default function AppHome() {
         </View>
       )}
 
-      <Button title='Calculate Boiling Point' onPress={calculateBoilingPoint} />
+      <TouchableHighlight
+        style={styles.calculateButton}
+        onPress={calculateBoilingPoint}
+        underlayColor='#66bb6a' // Light green when pressed
+      >
+        <Text style={styles.buttonText}>Calculate Boiling Point</Text>
+      </TouchableHighlight>
 
       {boilingPoint !== null && (
         <View style={styles.resultContainer}>
@@ -90,9 +96,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 20,
+    fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 20,
+    color: '#2196f3', // Pastel blue color
+    textShadowColor: '#ccc', // Light gray shadow
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 1,
   },
   switchContainer: {
     flexDirection: 'row',
@@ -108,6 +118,17 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 10,
+  },
+  calculateButton: {
+    backgroundColor: '#4caf50', // Green color
+    padding: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: '#fff', // White color
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   resultContainer: {
     marginTop: 20,
