@@ -9,11 +9,12 @@ import {
 } from 'react-native';
 import { Barometer } from 'expo-sensors';
 
-export default function AppHome() {
+const AppHome = () => {
   const [barometerData, setBarometerData] = useState(null);
   const [altitude, setAltitude] = useState('');
   const [useBarometer, setUseBarometer] = useState(true);
   const [boilingPoint, setBoilingPoint] = useState(null);
+  const [boilingPointAtSeaLevel, setBoilingPointAtSeaLevel] = useState(null);
 
   useEffect(() => {
     const subscription = Barometer.addListener((data) => {
@@ -25,12 +26,17 @@ export default function AppHome() {
     };
   }, []);
 
+  useEffect(() => {
+    // Calculate boiling point at sea level (altitude = 0 feet)
+    const boilingPointAtSeaLevel = 212;
+    setBoilingPointAtSeaLevel(boilingPointAtSeaLevel.toFixed(2));
+  }, []);
+
   const calculateBoilingPoint = () => {
     if (useBarometer && barometerData) {
-      const { pressure } = barometerData;
       // Convert pressure to altitude using a simplified formula
       const elevationInFeet =
-        (1 - Math.pow(pressure / 1013.25, 0.190284)) * 145366.45;
+        (1 - Math.pow(barometerData.pressure / 1013.25, 0.190284)) * 145366.45;
       const boilingPoint = 212 - 0.00198 * elevationInFeet;
       setBoilingPoint(boilingPoint.toFixed(2));
     } else if (!useBarometer && altitude !== '') {
@@ -45,6 +51,14 @@ export default function AppHome() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Boiling Point Estimator</Text>
+
+      {boilingPointAtSeaLevel !== null && (
+        <View style={styles.bannerContainer}>
+          <Text style={styles.bannerText}>
+            Boiling Point at Sea Level: {boilingPointAtSeaLevel} °F
+          </Text>
+        </View>
+      )}
 
       <View style={styles.switchContainer}>
         <Text>{`Use Barometer:  `}</Text>
@@ -87,7 +101,7 @@ export default function AppHome() {
       )}
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -103,6 +117,17 @@ const styles = StyleSheet.create({
     textShadowColor: '#ccc', // Light gray shadow
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 1,
+  },
+  bannerContainer: {
+    backgroundColor: '#81c784', // Light green color
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  bannerText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#fff', // White color
   },
   switchContainer: {
     flexDirection: 'row',
@@ -134,3 +159,5 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 });
+
+export default AppHome;

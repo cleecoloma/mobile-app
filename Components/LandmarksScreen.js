@@ -11,9 +11,14 @@ const LandmarksScreen = () => {
     { name: 'Burj Khalifa', altitude: 2717 },
     { name: 'Niagara Falls', altitude: 167 },
     { name: 'Great Wall of China', altitude: 3281 },
-    { name: 'Sydney Opera House', altitude: 0 }, // sea level
+    { name: 'Sydney Opera House', altitude: 0 },
     { name: 'Mount Kilimanjaro', altitude: 19341 },
+    { name: 'Dead Sea', altitude: -1412 },
+    { name: 'Badwater Basin', altitude: -282 },
+    { name: 'Challenger Deep', altitude: -36074 },
   ];
+
+  const sortedLandmarks = landmarksData.sort((a, b) => b.altitude - a.altitude);
 
   const renderLandmark = ({ item }) => (
     <View style={styles.row}>
@@ -26,7 +31,7 @@ const LandmarksScreen = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Popular Landmarks and Altitudes</Text>
       <FlatList
-        data={landmarksData}
+        data={sortedLandmarks}
         renderItem={renderLandmark}
         keyExtractor={(item) => item.name}
       />
